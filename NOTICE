@@ -1,0 +1,7 @@
+KITpro OS is a custom Linux distribution based on Rocky Linux.
+
+The base operating system components are derived from Rocky Linux, which itself is rebuilt from sources freely provided by Red Hat, Inc. These components retain their original open-source licenses (e.g., GPLv2, LGPL, BSD, MIT, etc.).
+
+All original content in this repository — including but not limited to kickstart files, shell scripts, branding assets, themes, and RPM spec files — is licensed under the MIT License (see LICENSE).
+
+Rocky Linux is a trademark of the Rocky Enterprise Software Foundation. This project is independent and not officially affiliated with RESF or Red Hat, Inc.

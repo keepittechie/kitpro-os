@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<channel name="xfce4-panel" version="1.0">
+  <property name="panels" type="array">
+    <value type="int" value="1"/>
+  </property>
+  <property name="panel-1" type="empty"/>
+</channel>

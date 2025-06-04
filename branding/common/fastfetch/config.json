@@ -1,0 +1,4 @@
+{
+  "displayMode": "minimal",
+  "modules": ["os", "kernel", "uptime", "memory", "cpu", "gpu", "disk"]
+}

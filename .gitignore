@@ -1,0 +1,17 @@
+# ISO build output
+/images/
+/iso/
+/output/
+/tmp/
+/work/
+/repos/iso-work/
+/repos/lost+found/
+/rpmbuild/BUILD/
+/rpmbuild/BUILDROOT/
+/rpmbuild/RPMS/*/*.rpm
+/rpmbuild/SRPMS/*.rpm
+/rpmbuild/RPMS/*.log
+/rpmbuild/SRPMS/*.log
+/rpmbuild/BUILD/Projects
+*.log
+*.treeinfo
