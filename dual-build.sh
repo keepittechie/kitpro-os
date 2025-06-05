@@ -19,27 +19,27 @@ FINAL_ISO="$OUTPUT_DIR/KITproOS-9.5-dual.iso"
 #####################################################
 #####################################################
 
-echo "[i] Cleaning previous build..."
+echo "🧹 Cleaning previous build..."
 rm -rf "$WORK_DIR" "$FINAL_ISO"
 mkdir -p "$WORK_DIR" "$OUTPUT_DIR" "$KS_DIR"
 
 #####################################################
 #####################################################
 
-echo "[i] Downloading Kickstart files..."
+echo "🌐 Downloading Kickstart files..."
 curl -fsSL -o "$KS_FULL" https://repo.kitpro.us/ks/kitpro-full.ks
 curl -fsSL -o "$KS_LIGHT" https://repo.kitpro.us/ks/kitpro-light.ks
 
 #####################################################
 #####################################################
 
-echo "[i] Extracting ISO contents..."
+echo "📂 Extracting ISO contents..."
 7z x "$BOOT_ISO" -o"$WORK_DIR" >/dev/null
 
 #####################################################
 #####################################################
 
-echo "[i] Copying local repos into ISO tree..."
+echo "📁 Copying local repos into ISO tree..."
 mkdir -p "$WORK_DIR/BaseOS/os"
 mkdir -p "$WORK_DIR/AppStream/os"
 rsync -avq "$REPOS_DIR/BaseOS/os/" "$WORK_DIR/BaseOS/os/"
@@ -48,7 +48,7 @@ rsync -avq "$REPOS_DIR/AppStream/os/" "$WORK_DIR/AppStream/os/"
 #####################################################
 #####################################################
 
-echo "[i] Injecting local.repo and kickstart/config files..."
+echo "📄 Injecting local.repo and kickstart/config files..."
 mkdir -p "$WORK_DIR/etc/yum.repos.d"
 cp "$KS_FULL" "$KS_DIR/kitpro-full.ks"
 cp "$KS_LIGHT" "$KS_DIR/kitpro-light.ks"
@@ -58,7 +58,7 @@ cp "$GRUB_CFG" "$WORK_DIR/EFI/BOOT/grub.cfg"
 #####################################################
 #####################################################
 
-echo "[i] Correct local.repo..."
+echo "📄 Correct local.repo..."
 cat > "$WORK_DIR/etc/yum.repos.d/local.repo" <<EOF
 [BaseOS]
 name=KITpro BaseOS
@@ -76,25 +76,25 @@ EOF
 #####################################################
 #####################################################
 
-echo "[i] Work directory size:"
+echo "📏 Work directory size:"
 du -sh "$WORK_DIR"
 
 #####################################################
 #####################################################
 
-echo "[i] Checking for isohdpfx.bin..."
+echo "🔍 Checking for isohdpfx.bin..."
 if [[ -f "$WORK_DIR/isolinux/isohdpfx.bin" ]]; then
-  echo "[i] Found isohdpfx.bin"
+  echo "✅ Found isohdpfx.bin"
   MBR_FLAG="-isohybrid-mbr $WORK_DIR/isolinux/isohdpfx.bin"
 else
-  echo "[!]  isohdpfx.bin not found — skipping -isohybrid-mbr"
+  echo "⚠️  isohdpfx.bin not found — skipping -isohybrid-mbr"
   MBR_FLAG=""
 fi
 
 #####################################################
 #####################################################
 
-echo "[i] Extracting and customizing install.img from Rocky boot ISO..."
+echo "📦 Extracting and customizing install.img from Rocky boot ISO..."
 BOOT_MNT="/mnt/rocky-boot"
 sudo mkdir -p "$BOOT_MNT"
 sudo mount -o loop "$BOOT_ISO" "$BOOT_MNT"
@@ -104,9 +104,9 @@ if [[ -f "$BOOT_MNT/images/install.img" ]]; then
   mkdir -p "$WORK_DIR/images"
   cp "$BOOT_MNT/images/install.img" "$INSTALL_IMG"
   chmod 644 "$INSTALL_IMG"
-  echo "[i] install.img copied successfully."
+  echo "✅ install.img copied successfully."
 else
-  echo "[X] install.img not found in Rocky boot ISO! Aborting."
+  echo "❌ install.img not found in Rocky boot ISO! Aborting."
   sudo umount "$BOOT_MNT"
   exit 1
 fi
@@ -116,7 +116,7 @@ sudo umount "$BOOT_MNT"
 #####################################################
 #####################################################
 
-echo "[i] Injecting custom Anaconda branding..."
+echo "[+] Injecting custom Anaconda branding..."
 
 INSTALL_IMG_SRC="$HOME/kitpro-os/images/install.img"
 INSTALL_IMG_DEST="$WORK_DIR/images/install.img"
@@ -127,7 +127,7 @@ TMP_DIR="$WORK_DIR/images/install-root"
 command -v unsquashfs >/dev/null || { echo "[X] unsquashfs not found. Install squashfs-tools."; exit 1; }
 command -v mksquashfs >/dev/null || { echo "[X] mksquashfs not found. Install squashfs-tools."; exit 1; }
 
-echo "[i] Extracting install.img..."
+echo "[>] Extracting install.img..."
 mkdir -p "$TMP_DIR"
 cd "$TMP_DIR"
 unsquashfs -no-xattrs "$INSTALL_IMG_SRC"
@@ -154,13 +154,13 @@ OS_RELEASE="squashfs-root/etc/os-release"
 sed -i 's/^NAME=.*/NAME="KITpro OS"/' "$OS_RELEASE"
 sed -i 's/^PRETTY_NAME=.*/PRETTY_NAME="KITpro OS 9.5"/' "$OS_RELEASE"
 
-echo "[i] Repacking install.img..."
-mksquashfs squashfs-root "$INSTALL_IMG_DEST" -noappend -comp xz >/dev/null
+echo "[>] Repacking install.img..."
+mksquashfs squashfs-root "$INSTALL_IMG_DEST" -noappend -comp xz -all-root >/dev/null
 
-echo "[i] Cleaning up temp files..."
+echo "[>] Cleaning up temp files..."
 sudo rm -rf "$TMP_DIR"
 
-echo "[i] Anaconda branding injected successfully."
+echo "[✓] Anaconda branding injected successfully."
 
 #####################################################
 #####################################################
@@ -247,7 +247,7 @@ EOF
 #####################################################
 #####################################################
 
-echo "[i] Update repos..."
+echo "📦 Update repos..."
 
 createrepo_c -g "$REPOS_DIR/BaseOS/os/comps-BaseOS.xml" -x --update "$WORK_DIR/BaseOS/os"
 createrepo_c -g "$REPOS_DIR/AppStream/os/comps-AppStream.xml" -x --update "$WORK_DIR/AppStream/os"
@@ -261,7 +261,7 @@ find "$WORK_DIR/AppStream/os/repodata" -name "*comps-AppStream.xml" -not -name "
 #####################################################
 #####################################################
 
-echo "[i] Rebuilding full dual boot ISO..."
+echo "🔥 Rebuilding full dual boot ISO..."
 xorriso -as mkisofs \
   -r -J -joliet-long -V "KITproOS-9.5" \
   -volset "KITproOS-9.5" \
@@ -276,5 +276,5 @@ xorriso -as mkisofs \
 
 #####################################################
 #####################################################
-echo "[i] Full dual boot ISO created: $FINAL_ISO"
+echo "✅ Full dual boot ISO created: $FINAL_ISO"
 du -sh "$FINAL_ISO"
