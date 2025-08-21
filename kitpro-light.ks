@@ -41,6 +41,8 @@ bash-completion
 gnome-disk-utility
 %end
 
+%include kickstarts/includes/xfce-wayland.ks.inc
+
 %post --log=/var/log/kitpro-post.log
 echo ">>> KITpro OS post-install starting..."
 

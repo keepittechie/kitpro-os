@@ -1,7 +1,7 @@
 #!/bin/bash
 
 REPO_BASE="https://repo.kitpro.us/ks"
-BOOT_ISO="$HOME/kitpro-os/iso/Rocky-9.5-x86_64-boot.iso"
+BOOT_ISO="$HOME/kitpro-os/iso/Rocky-10.0-x86_64-boot.iso"
 REPOS_DIR="$HOME/kitpro-os/repos"
 LOCAL_REPO_FILE="$REPOS_DIR/local.repo"
 OUTPUT_DIR="/opt/output"
@@ -10,8 +10,8 @@ OUTPUT_DIR="/opt/output"
 mkdir -p "$OUTPUT_DIR"
 
 declare -A builds=(
-  ["kitpro-full"]="kitproOS-9.5-full.iso"
-  ["kitpro-light"]="kitproOS-9.5-light.iso"
+  ["kitpro-full"]="kitproOS-10.0-full.iso"
+  ["kitpro-light"]="kitproOS-10.0-light.iso"
 )
 
 for ks_name in "${!builds[@]}"; do

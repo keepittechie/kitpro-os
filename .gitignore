@@ -1,17 +1,28 @@
-# ISO build output
-/images/
-/iso/
+# Build outputs
 /output/
+/.iso-work/
 /tmp/
-/work/
-/repos/iso-work/
-/repos/lost+found/
+/*.iso
+
+# ISO source + extracts
+/iso/*.iso
+/EFI/
+/images/
+/isolinux/
+
+# Local repo mirrors/caches
+/repos/*
+!/repos/mirrorlist
+
+# RPM build outputs
 /rpmbuild/BUILD/
 /rpmbuild/BUILDROOT/
-/rpmbuild/RPMS/*/*.rpm
-/rpmbuild/SRPMS/*.rpm
-/rpmbuild/RPMS/*.log
-/rpmbuild/SRPMS/*.log
-/rpmbuild/BUILD/Projects
-*.log
-*.treeinfo
+/rpmbuild/RPMS/
+/rpmbuild/SRPMS/
+
+# Editor/OS junk
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/

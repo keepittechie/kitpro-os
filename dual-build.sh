@@ -5,7 +5,7 @@ set -e
 #####################################################
 #####################################################
 
-BOOT_ISO="/opt/iso/Rocky-9.5-x86_64-dvd.iso"
+BOOT_ISO="/opt/iso/Rocky-10.0-x86_64-dvd.iso"
 OUTPUT_DIR="/opt/output"
 WORK_DIR="$HOME/kitpro-os/repos/iso-work"
 KS_DIR="$WORK_DIR/ks"
@@ -14,7 +14,7 @@ KS_FULL="$HOME/kitpro-os/kitpro-full.ks"
 KS_LIGHT="$HOME/kitpro-os/kitpro-light.ks"
 ISOLINUX_CFG="$HOME/kitpro-os/isolinux/isolinux.cfg"
 GRUB_CFG="$HOME/kitpro-os/EFI/BOOT/grub.cfg"
-FINAL_ISO="$OUTPUT_DIR/KITproOS-9.5-dual.iso"
+FINAL_ISO="$OUTPUT_DIR/KITproOS-10.0-dual.iso"
 
 #####################################################
 #####################################################
@@ -145,14 +145,14 @@ body {
   background-color: #0D1B2A;
 }
 .top-title::after {
-  content: "KITpro OS 9.5 INSTALLATION";
+  content: "KITpro OS 10.0 INSTALLATION";
 }
 EOF
 
 # Patch os-release
 OS_RELEASE="squashfs-root/etc/os-release"
 sed -i 's/^NAME=.*/NAME="KITpro OS"/' "$OS_RELEASE"
-sed -i 's/^PRETTY_NAME=.*/PRETTY_NAME="KITpro OS 9.5"/' "$OS_RELEASE"
+sed -i 's/^PRETTY_NAME=.*/PRETTY_NAME="KITpro OS 10.0"/' "$OS_RELEASE"
 
 echo "[>] Repacking install.img..."
 mksquashfs squashfs-root "$INSTALL_IMG_DEST" -noappend -comp xz -all-root >/dev/null
@@ -173,8 +173,8 @@ version = 1.2
 [general]
 family = KITpro OS
 timestamp = $(date +%s)
-version = 9.5
-name = KITproOS 9.5
+version = 10.0
+name = KITproOS 10.0
 short = kitpro
 arch = x86_64
 platforms = x86_64
@@ -191,7 +191,7 @@ repository = BaseOS
 [release]
 name = KITproOS
 short = kitpro
-version = 9.5
+version = 10.0
 is_layered = false
 
 [images-x86_64]
@@ -227,7 +227,7 @@ uid = AppStream
 [base_product]
 name = KITproOS
 short = kitpro
-version = 9.5
+version = 10.0
 description = KITpro OS Custom Rocky Linux ISO
 EOF
 
@@ -263,8 +263,8 @@ find "$WORK_DIR/AppStream/os/repodata" -name "*comps-AppStream.xml" -not -name "
 
 echo "🔥 Rebuilding full dual boot ISO..."
 xorriso -as mkisofs \
-  -r -J -joliet-long -V "KITproOS-9.5" \
-  -volset "KITproOS-9.5" \
+  -r -J -joliet-long -V "KITproOS-10.0" \
+  -volset "KITproOS-10.0" \
   -o "$FINAL_ISO" \
   $MBR_FLAG \
   -c isolinux/boot.cat \

@@ -1,0 +1,10 @@
+#!/bin/sh
+/usr/bin/xfsettingsd &
+/usr/bin/xfce4-panel &
+/usr/bin/xfce4-power-manager &
+/usr/bin/thunar --daemon &
+/usr/bin/nm-applet --indicator &
+/usr/libexec/polkit-gnome-authentication-agent-1 &
+/usr/bin/swaybg -m fill -i /usr/share/backgrounds/kitpro/default.jpg &
+# clipboard history is optional; comment if not available:
+# /usr/bin/wl-clipboard-history -n &

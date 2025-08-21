@@ -1,4 +1,4 @@
-#version=ROCKY9
+#version=ROCKY10
 # KITpro OS - Full MATE Install
 # Maintained by Josh @ KeepItTechie
 
@@ -61,6 +61,8 @@ mesa-dri-drivers
 mesa-libGL
 mesa-libEGL
 %end
+
+%include /ks/xfce-wayland.ks.inc
 
 %post
 

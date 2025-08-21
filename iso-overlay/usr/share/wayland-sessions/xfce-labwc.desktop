@@ -1,0 +1,6 @@
+[Desktop Entry]
+Name=XFCE (Wayland - labwc)
+Comment=XFCE session running on the labwc Wayland compositor
+Exec=/usr/local/bin/start-xfce-labwc
+Type=Application
+DesktopNames=XFCE

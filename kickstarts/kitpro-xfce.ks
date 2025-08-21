@@ -1,4 +1,4 @@
-#version=ROCKY9
+#version=ROCKY10
 lang en_US.UTF-8
 keyboard us
 timezone America/Los_Angeles --utc

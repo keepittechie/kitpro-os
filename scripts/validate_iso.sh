@@ -1,6 +1,6 @@
 #!/bin/bash
 
-ISO_PATH="/opt/output/KITproOS-9.5-dual.iso"
+ISO_PATH="/opt/output/KITproOS-10.0-dual.iso"
 MOUNT_DIR="/mnt/iso-test"
 REQUIRED_TREEINFO_FIELDS=("release.name" "release.short" "release.version" "base_product.short" "general.short")
 REQUIRED_IMAGES=("images/install.img" "images/pxeboot/vmlinuz" "images/pxeboot/initrd.img")
@@ -56,8 +56,8 @@ done
 # Step 4: Volume Label Check
 VOLUME_LABEL=$(isoinfo -d -i "$ISO_PATH" | grep 'Volume id:' | cut -d: -f2 | xargs)
 echo -e "\n[->] Volume Label: $VOLUME_LABEL"
-if [[ "$VOLUME_LABEL" != KITproOS-9.5 ]]; then
-    echo "[X] Volume label mismatch (expected KITproOS-9.5)"
+if [[ "$VOLUME_LABEL" != KITproOS-10.0 ]]; then
+    echo "[X] Volume label mismatch (expected KITproOS-10.0)"
     ((ERRORS++))
 else
     echo "[OK] Volume label correct"
