@@ -1,6 +1,6 @@
 # KITpro OS
 
-KITpro OS is a lightweight, user-friendly Linux distribution based on Rocky Linux 9.5. It offers polished desktop environments (MATE and XFCE), pre-installed desktop apps, system-wide theming, and first-boot customization—all geared toward productivity, consistency, and simplicity.
+KITpro OS is a lightweight, user-friendly Linux distribution based on Rocky Linux 10.1. It offers polished desktop environments (MATE and XFCE), pre-installed desktop apps, system-wide theming, and first-boot customization-all geared toward productivity, consistency, and simplicity.
 
 [Download KITpro OS](https://os.kitpro.us/)
 
@@ -12,7 +12,7 @@ This repository contains the full build source, including RPMs, branding assets,
 
 ## Features
 
-- Built from Rocky Linux 9.5 (RHEL-compatible)
+- Built from Rocky Linux 10.1 (RHEL-compatible)
 - Available in MATE and XFCE spins
 - Custom LightDM login screen and greeters
 - KITpro branding: wallpapers, icon sets, terminal tweaks, GTK themes
@@ -64,7 +64,7 @@ This will sync BaseOS and AppStream content for offline/local usage.
 ```bash
 ./dual-build.sh
 ```
-This builds a hybrid ISO with both MATE and XFCE included. Output goes to `/opt/output/KITproOS-9.5-dual.iso`.
+This builds a hybrid ISO with both MATE and XFCE included. Output goes to `./output/KITproOS-10.1-dual.iso`.
 
 ### Step 3: Build Single ISOs (Optional)
 ```bash
@@ -74,7 +74,7 @@ sudo bash scripts/build-kitpro-netinstall.sh
 ```
 
 ### Required Packages
-Install on a Rocky Linux 9.x build host:
+Install on a Rocky Linux 10.x build host:
 
 ```
 sudo dnf install lorax genisoimage createrepo_c mkksiso anaconda pykickstart -y
@@ -109,6 +109,8 @@ All `.spec` files and SRPMs can be found under `rpmbuild/SPECS/` and `rpmbuild/S
 KITpro OS uses a custom repository hosted at:
 
 https://repo.kitpro.us/9/x86_64/
+
+Note: the build target is Rocky Linux 10.1, but the public KITpro package repository is still currently published under the `/9/` path.
 
 This repo contains all RPMs and metadata used by the installer.
 

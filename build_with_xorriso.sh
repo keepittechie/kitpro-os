@@ -1,37 +1,59 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-REPO_ROOT="/opt/kitpro-os"
-ISO_IN="${ISO_IN:-$REPO_ROOT/iso/Rocky-10.0-x86_64-dvd.iso}"
-ISO_OUT="$REPO_ROOT/output/KITproOS-10.0-$(date +%Y%m%d).iso"
-KS_SRC="$REPO_ROOT/kitpro-full.flat.ks"     # <- flattened KS
-KS_DST="ks/ks.cfg"                          # <- standard location
-OVERLAY="$REPO_ROOT/iso-overlay"
-WORK="$REPO_ROOT/.iso-work"
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="${REPO_ROOT:-$SCRIPT_DIR}"
 
-[[ -f "$ISO_IN" ]] || { echo "Missing $ISO_IN"; exit 1; }
-[[ -f "$KS_SRC" ]] || { echo "Missing $KS_SRC (did you flatten?)"; exit 1; }
+find_iso() {
+  find "$REPO_ROOT/iso" -maxdepth 1 -type f \
+    \( -name 'Rocky-*-x86_64-dvd1.iso' -o -name 'Rocky-*-x86_64-dvd.iso' \) \
+    | sort | tail -n1
+}
+
+extract_iso() {
+  local iso_path="$1"
+  local dest_dir="$2"
+
+  if command -v bsdtar >/dev/null 2>&1; then
+    bsdtar -C "$dest_dir" -xf "$iso_path"
+  elif command -v 7z >/dev/null 2>&1; then
+    7z x -y "-o$dest_dir" "$iso_path" >/dev/null
+  else
+    xorriso -osirrox on -indev "$iso_path" -extract / "$dest_dir" >/dev/null
+  fi
+}
+
+ISO_IN="${ISO_IN:-$(find_iso)}"
+[[ -n "$ISO_IN" && -f "$ISO_IN" ]] || { echo "Missing Rocky ISO under $REPO_ROOT/iso"; exit 1; }
+
+ISO_VERSION="${ISO_VERSION:-$(basename "$ISO_IN" | sed -nE 's/^Rocky-([0-9][0-9.]*)-x86_64-.*\.iso$/\1/p')}"
+ISO_OUT="${ISO_OUT:-$REPO_ROOT/output/KITproOS-${ISO_VERSION:-custom}-$(date +%Y%m%d).iso}"
+KS_SRC="${KS_SRC:-$REPO_ROOT/kitpro-light.ks}"
+KS_DST="ks/ks.cfg"
+OVERLAY="${OVERLAY:-$REPO_ROOT/iso-overlay}"
+WORK="${WORK:-$REPO_ROOT/.iso-work}"
+
+[[ -f "$KS_SRC" ]] || { echo "Missing $KS_SRC"; exit 1; }
 [[ -d "$OVERLAY" ]] || { echo "Missing $OVERLAY dir"; exit 1; }
 
-# Reuse source ISO volume label to keep stage2 paths sane
-VOLID="$(xorriso -indev "$ISO_IN" -pvd_info 2>/dev/null | awk -F': ' '/Volume id/ {print $2}')"
-[[ -n "$VOLID" ]] || VOLID="KITPRO_OS_10"
+VOLID="$(xorriso -indev "$ISO_IN" -pvd_info 2>/dev/null | awk -F': ' '/Volume [Ii]d/ {print $2}')"
+[[ -n "$VOLID" ]] || VOLID="KITPRO_OS_${ISO_VERSION//./_}"
 
-rm -rf "$WORK"; mkdir -p "$WORK" "$(dirname "$ISO_OUT")"
+rm -rf "$WORK"
+mkdir -p "$WORK" "$(dirname "$ISO_OUT")"
 
 echo "[1/5] Extracting base ISO..."
-bsdtar -C "$WORK" -xf "$ISO_IN"
+extract_iso "$ISO_IN" "$WORK"
 
 echo "[2/5] Grafting overlay + kickstart..."
 rsync -a "$OVERLAY"/ "$WORK"/
 install -D -m 0644 "$KS_SRC" "$WORK/$KS_DST"
+[[ -d "$REPO_ROOT/branding" ]] && rsync -a "$REPO_ROOT/branding"/ "$WORK/branding"/
 
 echo "[3/5] Patching boot configs (inst.stage2=cdrom inst.repo=cdrom inst.ks=cdrom:/$KS_DST)..."
-# ISOLINUX (BIOS)
 if [[ -f "$WORK/isolinux/isolinux.cfg" ]]; then
   sed -i -E 's|(append .*)$|\1 inst.stage2=cdrom inst.repo=cdrom inst.ks=cdrom:/ks/ks.cfg|g' "$WORK/isolinux/isolinux.cfg" || true
 fi
-# GRUB (UEFI)
 if [[ -f "$WORK/EFI/BOOT/grub.cfg" ]]; then
   sed -i -E 's|(linuxefi .*)$|\1 inst.stage2=cdrom inst.repo=cdrom inst.ks=cdrom:/ks/ks.cfg|g' "$WORK/EFI/BOOT/grub.cfg" || true
   sed -i -E 's|(linux .*)$|\1 inst.stage2=cdrom inst.repo=cdrom inst.ks=cdrom:/ks/ks.cfg|g' "$WORK/EFI/BOOT/grub.cfg" || true
@@ -65,7 +87,7 @@ elif [[ -f "$WORK/$UEFI_IMG" ]]; then
     -no-emul-boot \
     "$WORK"
 else
-  echo "❌ No boot media found (neither isolinux nor efiboot.img). Use the Rocky *boot* ISO as ISO_IN."
+  echo "No boot media found (neither isolinux nor efiboot.img)."
   exit 1
 fi
 

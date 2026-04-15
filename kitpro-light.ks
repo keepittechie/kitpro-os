@@ -1,5 +1,5 @@
-#version=RHEL9
-# KITpro OS - Light XFCE Install
+#version=ROCKY10
+# KITpro OS - Light XFCE Install (X11)
 # Maintained by Josh @ KeepItTechie
 
 lang en_US.UTF-8
@@ -41,8 +41,6 @@ bash-completion
 gnome-disk-utility
 %end
 
-%include kickstarts/includes/xfce-wayland.ks.inc
-
 %post --log=/var/log/kitpro-post.log
 echo ">>> KITpro OS post-install starting..."
 
@@ -83,26 +81,31 @@ EOF
 rpm --import https://repo.kitpro.us/RPM-GPG-KEY-KITPRO
 
 # Install KITpro branding
-dnf install -y arc-theme
+dnf install -y kitpro-branding arc-theme
 
 # Enable graphical login
 systemctl set-default graphical.target
 systemctl enable lightdm
 systemctl enable initial-setup
 
-# Apply XFCE branding (will apply to user created at first boot)
-cp -r /branding/common/gtk-3.0 /etc/skel/.config/
-cp -r /branding/common/wallpapers /usr/share/backgrounds/kitpro/
-cp /branding/common/fastfetch/config.json /etc/fastfetch/config.json
+# Apply XFCE branding from install media
+mkdir -p /etc/skel/.config
+mkdir -p /usr/share/backgrounds/kitpro
+cp -r /run/install/repo/branding/common/gtk-3.0 /etc/skel/.config/
+cp -r /run/install/repo/branding/common/wallpapers/. /usr/share/backgrounds/kitpro/
+cp /run/install/repo/branding/common/fastfetch/config.json /etc/fastfetch/config.json
 
 mkdir -p /etc/skel/.config/xfce4/terminal
-cp -r /branding/xfce4/terminal/terminalrc /etc/skel/.config/xfce4/terminal/
+cp -r /run/install/repo/branding/xfce4/terminal/terminalrc /etc/skel/.config/xfce4/terminal/
 
 mkdir -p /etc/skel/.config/Thunar
-cp -r /branding/xfce4/Thunar/thunarrc /etc/skel/.config/Thunar/
+cp -r /run/install/repo/branding/xfce4/Thunar/thunarrc /etc/skel/.config/Thunar/
 
 mkdir -p /etc/skel/.config/xfce4/xfconf/xfce-perchannel-xml
-cp -r /branding/xfce4/xfconf/xfce-perchannel-xml/* /etc/skel/.config/xfce4/xfconf/xfce-perchannel-xml/
+cp -r /run/install/repo/branding/xfce4/xfconf/xfce-perchannel-xml/* /etc/skel/.config/xfce4/xfconf/xfce-perchannel-xml/
+
+cp /run/install/repo/branding/common/zsh/.zshrc /etc/skel/.zshrc
+cp /run/install/repo/branding/common/zsh/.p10k.zsh /etc/skel/.p10k.zsh
 
 # Enable polkit agent
 mkdir -p /etc/xdg/autostart/

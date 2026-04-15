@@ -5,6 +5,6 @@
 /usr/bin/thunar --daemon &
 /usr/bin/nm-applet --indicator &
 /usr/libexec/polkit-gnome-authentication-agent-1 &
-/usr/bin/swaybg -m fill -i /usr/share/backgrounds/kitpro/default.jpg &
+/usr/bin/swaybg -m fill -i /usr/share/backgrounds/kitpro/default.png &
 # clipboard history is optional; comment if not available:
 # /usr/bin/wl-clipboard-history -n &

@@ -88,7 +88,7 @@ EOF
 rpm --import https://repo.kitpro.us/RPM-GPG-KEY-KITPRO
 
 # KITpro branding packages
-dnf install -y arc-theme
+dnf install -y kitpro-branding arc-theme
 
 # Enable graphical login
 systemctl set-default graphical.target
@@ -98,20 +98,23 @@ systemctl enable lightdm
 useradd -m -G wheel -s /bin/zsh kituser
 echo 'kituser:kitpro' | chpasswd
 
-# Apply branding
+# Apply branding from install media
 mkdir -p /home/kituser/.config/xfce4/terminal
-cp -r /branding/xfce4/terminal/terminalrc /home/kituser/.config/xfce4/terminal/
+cp -r /run/install/repo/branding/xfce4/terminal/terminalrc /home/kituser/.config/xfce4/terminal/
 
 mkdir -p /home/kituser/.config/Thunar
-cp -r /branding/xfce4/Thunar/thunarrc /home/kituser/.config/Thunar/
+cp -r /run/install/repo/branding/xfce4/Thunar/thunarrc /home/kituser/.config/Thunar/
 
 mkdir -p /home/kituser/.config/xfce4/xfconf/xfce-perchannel-xml
-cp -r /branding/xfce4/xfconf/xfce-perchannel-xml/* /home/kituser/.config/xfce4/xfconf/xfce-perchannel-xml/
+cp -r /run/install/repo/branding/xfce4/xfconf/xfce-perchannel-xml/* /home/kituser/.config/xfce4/xfconf/xfce-perchannel-xml/
 
-cp -r /branding/common/gtk-3.0 /home/kituser/.config/
-cp -r /branding/common/wallpapers /usr/share/backgrounds/kitpro/
-cp /branding/common/zsh/.zshrc /home/kituser/.zshrc
-cp /branding/common/fastfetch/config.json /etc/fastfetch/config.json
+mkdir -p /home/kituser/.config
+mkdir -p /usr/share/backgrounds/kitpro
+cp -r /run/install/repo/branding/common/gtk-3.0 /home/kituser/.config/
+cp -r /run/install/repo/branding/common/wallpapers/. /usr/share/backgrounds/kitpro/
+cp /run/install/repo/branding/common/zsh/.zshrc /home/kituser/.zshrc
+cp /run/install/repo/branding/common/zsh/.p10k.zsh /home/kituser/.p10k.zsh
+cp /run/install/repo/branding/common/fastfetch/config.json /etc/fastfetch/config.json
 
 chown -R kituser:kituser /home/kituser
 
