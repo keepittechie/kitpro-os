@@ -52,11 +52,11 @@ install -D -m 0644 "$KS_SRC" "$WORK/$KS_DST"
 
 echo "[3/5] Patching boot configs (inst.stage2=cdrom inst.repo=cdrom inst.ks=cdrom:/$KS_DST)..."
 if [[ -f "$WORK/isolinux/isolinux.cfg" ]]; then
-  sed -i -E 's|(append .*)$|\1 inst.stage2=cdrom inst.repo=cdrom inst.ks=cdrom:/ks/ks.cfg|g' "$WORK/isolinux/isolinux.cfg" || true
+  sed -i -E 's|^([[:space:]]*append .*)$|\1 inst.stage2=cdrom inst.repo=cdrom inst.ks=cdrom:/ks/ks.cfg|g' "$WORK/isolinux/isolinux.cfg" || true
 fi
 if [[ -f "$WORK/EFI/BOOT/grub.cfg" ]]; then
-  sed -i -E 's|(linuxefi .*)$|\1 inst.stage2=cdrom inst.repo=cdrom inst.ks=cdrom:/ks/ks.cfg|g' "$WORK/EFI/BOOT/grub.cfg" || true
-  sed -i -E 's|(linux .*)$|\1 inst.stage2=cdrom inst.repo=cdrom inst.ks=cdrom:/ks/ks.cfg|g' "$WORK/EFI/BOOT/grub.cfg" || true
+  sed -i -E 's|^([[:space:]]*linuxefi .*)$|\1 inst.stage2=cdrom inst.repo=cdrom inst.ks=cdrom:/ks/ks.cfg|g' "$WORK/EFI/BOOT/grub.cfg" || true
+  sed -i -E 's|^([[:space:]]*linux .*)$|\1 inst.stage2=cdrom inst.repo=cdrom inst.ks=cdrom:/ks/ks.cfg|g' "$WORK/EFI/BOOT/grub.cfg" || true
 fi
 
 echo "[4/5] Rebuilding ISO (auto-detect BIOS/UEFI boot media)..."
